@@ -1,97 +1,56 @@
-// import React from 'react';
-// import CSSModules from 'react-css-modules';
-// import {Panel} from '2kit';
-// import {connect, Dispatch} from 'react-redux';
-// import HomePage from '../HomePage/HomePage';
-// import SmsCodePage from '../SmsCodePage/SmsCodePage';
-// import IframePage from '../IframePage/IframePage';
-// import ErrorPage from '../ErrorPage/ErrorPage';
-// import SuccessPage from '../SuccessPage/SuccessPage';
-// import {Pages} from '../../modules/step/step.constants';
-// import {setHeight, closeFrame} from '../../modules/postMessages/postMessages.actions';
-// import {StoreState} from '../../modules/index/index.reducer';
-//
-// import styles from './App.css';
-//
-// export interface AppActions {
-// 	closeFrame: () => void;
-// }
-//
-// type AppProps = StoreState;
-//
-// export function resizeBlock(): void {
-// 	const height = (document.querySelector('#app') as HTMLDivElement).offsetHeight;
-//
-// 	setHeight(height);
-// }
-//
-// @CSSModules(styles)
-// class App extends React.Component<AppProps & AppActions> {
-//
-// 	isPromo() {
-// 		const {step, error} = this.props;
-//
-// 		if (error.value || step === Pages.SuccessPage) {
-// 			return true;
-// 		} else {
-// 			return false;
-// 		}
-// 	}
-//
-// 	handlerResizeHeight = (height: number) => {
-// 		setHeight(height);
-// 	}
-//
-// 	render() {
-// 		const {phone} = this.props.data;
-// 		const {iframe, customErrorForm, step, error, closeFrame} = this.props;
-//
-// 		const pages = {
-// 			[Pages.HomePage]: (
-// 				<HomePage
-// 					phone={phone}
-// 					/>
-// 			),
-// 			[Pages.SmsCodePage]: (
-// 				<SmsCodePage
-// 					customErrorForm={customErrorForm}
-// 					/>
-// 			),
-// 			[Pages.IframePage]: <IframePage />,
-// 			[Pages.SuccessPage]: <SuccessPage />,
-// 		};
-//
-// 		return (
-// 			<Panel
-// 				size="small"
-// 		onResizeHeight={this.handlerResizeHeight}
-// 		onClose={closeFrame}
-// 		promo={this.isPromo()}
-// 		popup={iframe}
-// 		>
-// 		{
-// 			error.value ?
-// 			<ErrorPage
-// 				type={error.type}
-// 		iframe={iframe}
-// 			/>
-// 	:
-// 		pages[step]
-// 	}
-// 		</Panel>
-// 	);
-// 	}
-// }
-//
-// const mapDispatchToProps = (dispatch: Dispatch<{}>): AppActions => {
-// 	return {
-// 		closeFrame: () => dispatch(closeFrame()),
-// 	};
-// };
-//
-// const mapStateToProps = (state: StoreState): StoreState => state;
-//
-// export default connect<AppProps, AppActions, {}>(
-// 	mapStateToProps,
-// 	mapDispatchToProps,
-// )(App);
+import React from 'react';
+import { withStyles } from 'material-ui/styles';
+import BottomNavigation, {BottomNavigationButton} from 'material-ui/BottomNavigation';
+import {Search, AccountCircle, LocationOn} from 'material-ui-icons';
+import BaseCart from '../BaseCart/BaseCart';
+
+const styles = {
+	root: {
+		width: 500,
+	},
+	bottomNavigation: {
+		position: 'fixed',
+		bottom: '-500px',
+		paddingBottom: '500px',
+		background: '#fff',
+		width: '100%',
+		display: 'flex',
+		justifyContent: 'center',
+		boxShadow: '10px -5px 15px -7px rgba(0,0,0,0.55)',
+	}
+};
+
+class App extends React.Component<any> {
+	state = {
+		value: 'search',
+	};
+
+	handleChange = (event, value) => {
+		this.setState({ value });
+	};
+
+	render() {
+		const { classes } = this.props;
+		const { value } = this.state;
+
+		return (
+			<div style={{display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap'}}>
+				{
+					[1,2,3,4,5,6].map((el) =>
+						<BaseCart key={el} />
+					)
+				}
+
+				<div className={classes.bottomNavigation}>
+					<BottomNavigation value={value} onChange={this.handleChange} className={classes.root}>
+						<BottomNavigationButton label="Поиск" value="search" icon={<Search />} />
+						<BottomNavigationButton label="Карта" value="map" icon={<LocationOn />} />
+						<BottomNavigationButton label="Мой профиль" value="profile" icon={<AccountCircle />} />
+					</BottomNavigation>
+				</div>
+			</div>
+		);
+	}
+}
+
+export default withStyles(styles)(App);

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import BaseCart from './components/BaseCart/BaseCart';
 import Button from 'material-ui/Button';
+import App from './components/App/App';
 
 import './assets/css/reset.css';
 // import {Provider} from 'react-redux';
@@ -13,13 +13,6 @@ import './assets/css/reset.css';
 
 
 ReactDOM.render(
-	<div style={{display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap'}}>
-
-		{
-			[1,2,3,4,5,6].map((el) =>
-				<BaseCart key={el} />
-			)
-		}
-	</div>,
+		<App/>,
 	document.getElementById('app'),
 );

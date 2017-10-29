@@ -88,12 +88,12 @@
     "url": "git@gitlab.corp.mail.ru:mail/e.mail.ru.money.accept.git"
   },
   "scripts": {
-    "build": "exit 0",
     "postversion": "git push --tags origin HEAD",
     "jam": "rm -rf ~/.jam/ && node ./node_modules/jamjs/bin/jam.js install --verbose",
     "start": "NODE_ENV=develop webpack-dev-server --config webpack.config.js",
     "test": "npm run lint",
-    "lint": "./node_modules/.bin/tslint -c tslint.json 'app/**/*.ts?(x)'"
+    "lint": "./node_modules/.bin/tslint -c tslint.json 'app/**/*.ts?(x)'",
+    "build": "NODE_ENV=production ./node_modules/.bin/webpack --config webpack.config.js"
   },
   "devDependencies": {
     "@types/material-ui": "^0.18.3"

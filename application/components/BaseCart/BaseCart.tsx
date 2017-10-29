@@ -55,7 +55,7 @@ class BaseCart extends React.Component<any> {
 							<IconButton disableRipple>
 								<Star />
 							</IconButton>
-							<Typography type="colorSecondary">4.8</Typography>
+							<Typography color="secondary">4.8</Typography>
 						</div>
 
 						<div className={classes.bookmark}>
