@@ -51,3 +51,6 @@ table {
 body {
     background-color: #eeeeee;
 }
+a {
+    text-decoration: none;
+}

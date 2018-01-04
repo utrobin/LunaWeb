@@ -6,7 +6,10 @@ import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import {AppBar, Toolbar, IconButton, Drawer, Divider} from 'material-ui';
 import Typography from 'material-ui/Typography';
 import MenuIcon from 'material-ui-icons/Menu';
+import {withRouter} from 'react-router-dom'
 import BaseCart from '../BaseCart/BaseCart';
+import {connect} from "react-redux";
+
 
 const styles = theme => ({
 	root: {
@@ -35,9 +38,22 @@ const styles = theme => ({
 	flex: {
 		flex: 1,
 	},
+
+	plug: {
+		paddingBottom: 64,
+
+		'@media (max-width: 600px)': {
+			paddingBottom: 48
+		},
+
+		'@media (max-width: 526px)': {
+			paddingBottom: 56
+		},
+	}
 });
 
-class App extends React.Component<any, any> {
+class MainWrapper extends React.Component<any, any> {
+
 	state = {
 		left: false,
 	};
@@ -48,36 +64,39 @@ class App extends React.Component<any, any> {
 		});
 	};
 
-	handleChange = (event, value) => {
-		this.setState({ value });
-	};
-
 	render() {
 		const { classes } = this.props;
+
+		const {push} = this.props.history;
 
 		const sideList = (
 			<div className={classes.list}>
 				<List>
-					<ListItem button>
+					<ListItem button onClick={() => push('/')}>
 						<ListItemIcon>
 							<Search />
 						</ListItemIcon>
 						<ListItemText primary="Поиск" />
 					</ListItem>
-					<ListItem button>
+
+					<ListItem button onClick={() => push('/map')}>
 						<ListItemIcon>
 							<LocationOn />
 						</ListItemIcon>
 						<ListItemText primary="Карта" />
 					</ListItem>
+
 					<ListItem button>
 						<ListItemIcon>
 							<AccountCircle />
 						</ListItemIcon>
-						<ListItemText primary="Мой профиль" />
+							<ListItemText primary="Мой профиль" />
 					</ListItem>
+
 				</List>
+
 				<Divider />
+
 				<List>
 					<ListItem button>
 						<ListItemIcon>
@@ -113,16 +132,12 @@ class App extends React.Component<any, any> {
 					</div>
 				</Drawer>
 
-				<div style={{display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', paddingTop: 80}}>
-					{
-						[1,2,3,4,5,6].map((el) =>
-							<BaseCart key={el} />
-						)
-					}
-				</div>
+				<div className={classes.plug} />
+
+				{this.props.children}
 			</div>
 		);
 	}
 }
 
-export default withStyles(styles)(App);
+export default withRouter(withStyles(styles)(MainWrapper));

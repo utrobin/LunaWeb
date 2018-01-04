@@ -35,5 +35,8 @@ export default theme => ({
 	},
 	CardActions: {
 		justifyContent: 'space-between',
-	}
+	},
+	dots: {
+		bottom: -38,
+	},
 });
