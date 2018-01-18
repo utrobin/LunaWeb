@@ -6,9 +6,7 @@ import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import {AppBar, Toolbar, IconButton, Drawer, Divider} from 'material-ui';
 import Typography from 'material-ui/Typography';
 import MenuIcon from 'material-ui-icons/Menu';
-import {withRouter} from 'react-router-dom'
-import BaseCart from '../BaseCart/BaseCart';
-import {connect} from "react-redux";
+import {withRouter} from 'react-router-dom';
 
 
 const styles = theme => ({
@@ -72,7 +70,7 @@ class MainWrapper extends React.Component<any, any> {
 		const sideList = (
 			<div className={classes.list}>
 				<List>
-					<ListItem button onClick={() => push('/')}>
+					<ListItem button onClick={() => push('/master')}>
 						<ListItemIcon>
 							<Search />
 						</ListItemIcon>
@@ -116,12 +114,12 @@ class MainWrapper extends React.Component<any, any> {
 							<MenuIcon />
 						</IconButton>
 						<Typography type="title" color="inherit" className={classes.flex}>
-							Луна
+							Luna
 						</Typography>
 					</Toolbar>
 				</AppBar>
 
-				<Drawer open={this.state.left} onRequestClose={this.toggleDrawer('left', false)}>
+				<Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>
 					<div
 						tabIndex={0}
 						role="button"

@@ -1,5 +1,6 @@
 import React from 'react';
 import {withStyles} from 'material-ui/styles';
+import {Link} from 'react-router-dom'
 import Card, { CardHeader, CardMedia, CardActions } from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
 import {Delete, PregnantWoman, Cloud, Watch, Star, Bookmark, BookmarkBorder} from 'material-ui-icons';
@@ -9,11 +10,17 @@ import Slider from 'react-slick';
 
 import styles from './BaseCartStyles';
 
+const ICONS = new Map([
+	[1, {color: 'accent', component: <Delete />}],
+	[2, {color: 'primary', component: <Cloud />}],
+	[3, {color: 'default', component: <Watch />}],
+]);
+
 class BaseCart extends React.Component<any> {
 
 	render() {
 		console.log(this.props);
-		const {classes, avatar, stars, photos, name, signs} = this.props;
+		const {classes, avatar, stars, photos, name, signs, id = 0} = this.props;
 
 		const settings = {
 			arrows: false,
@@ -28,58 +35,53 @@ class BaseCart extends React.Component<any> {
 		return (
 			<div className={classes.wrapper}>
 				<Card className={classes.card}>
-					<CardHeader
-						avatar={
-							<Avatar
-								aria-label="Recipe"
-								className={classes.avatar}
-								src={avatar.path}
-							/>
-						}
-						title={`Мастер ${name}`}
-						subheader="Рядом с метро курская."
-					/>
+					<Link to={`/topics/${id}`}>
+						<CardHeader
+							avatar={
+								<Avatar
+									aria-label="Recipe"
+									className={classes.avatar}
+									src={avatar.path}
+								/>
+							}
+							title={`Мастер ${name}`}
+							subheader="Рядом с метро курская."
+						/>
+					</Link>
 
 					<div>
 						{
 							signs.map((el, i) => {
 								const {id} = el;
-								console.log(id, el);
 
-								if (id === 1) {
-									return (
-										<IconButton aria-label="Delete" color="accent">
-											<Delete />
-										</IconButton>
-									)
-								} else if (id === 2) {
-									return (
-										<IconButton aria-label="Delete" color="primary">
-											<Cloud />
-										</IconButton>
-									)
+								const {color, component} = ICONS.get(id);
 
-								} else if (id === 3) {
-									return (
-										<IconButton aria-label="Delete">
-											<Watch />
-										</IconButton>
-									)
-								}
+								return (
+									<IconButton aria-label="Delete" color={color} key={i}>
+										{component}
+									</IconButton>
+								)
 							})
 						}
 					</div>
 
-					<Slider {...{...settings, ...{dots: photos.length === 1 ? false : true}}}>
+					{console.log(photos)}
+					<Slider {...{...settings, ...{dots: photos.length <= 1 ? false : true}}}>
 						{
-							photos.map((el, i) =>
-								<div key={i}>
-									<CardMedia
-										className={classes.media}
-										image={el.path}
-									/>
-								</div>
-							)
+							photos.length ?
+								photos.map((el, i) =>
+									<div key={i}>
+										<CardMedia
+											className={classes.media}
+											image={el.path}
+										/>
+									</div>
+								)
+								:
+								<CardMedia
+									className={classes.media}
+									image="https://utrobin.com/static/img/plug.jpg"
+								/>
 						}
 					</Slider>
 

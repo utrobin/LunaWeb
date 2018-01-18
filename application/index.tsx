@@ -5,8 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 import {Provider} from 'react-redux';
 import { ApolloClient } from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
-import { ApolloLink } from 'apollo-link';
-import gql from 'graphql-tag';
 import { onError } from 'apollo-link-error';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import configureStore from './store/configureStore';
