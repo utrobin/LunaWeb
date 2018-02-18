@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
-import {BottomNavigationButton} from 'material-ui/BottomNavigation';
+import BottomNavigationButton from 'material-ui/BottomNavigation';
 import { Switch, Route, Link } from 'react-router-dom';
 import {Search, AccountCircle, LocationOn, Announcement} from 'material-ui-icons';
 import gql from 'graphql-tag';
@@ -28,9 +28,7 @@ class SearchPage extends React.Component<any, any> {
 
 	render() {
 		const {loading, feed} = this.props.data;
-		const {progress, wrapper} = this.props.classes;
-
-		console.log(this.props.match);
+		const {progress, wrapper}: any = this.props.classes;
 
 		return (
 			<div className={wrapper}>
@@ -61,7 +59,7 @@ const Comp = connect<any, any, any>(
 )(withStyles(styles)(SearchPage));
 
 const MY_QUERY = gql`query {
-	feed(limit: 4)	{
+	feed(limit: 4, offset: 0)	{
 		id,
 		name,
 		stars,

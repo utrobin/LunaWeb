@@ -1,13 +1,11 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
-import {BottomNavigationButton} from 'material-ui/BottomNavigation';
-import {Search, AccountCircle, LocationOn, Announcement} from 'material-ui-icons';
+import {Search, AccountCircle, LocationOn, Announcement, Person} from 'material-ui-icons';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import {AppBar, Toolbar, IconButton, Drawer, Divider} from 'material-ui';
 import Typography from 'material-ui/Typography';
 import MenuIcon from 'material-ui-icons/Menu';
 import {withRouter} from 'react-router-dom';
-
 
 const styles = theme => ({
 	root: {
@@ -47,6 +45,10 @@ const styles = theme => ({
 		'@media (max-width: 526px)': {
 			paddingBottom: 56
 		},
+	},
+
+	header: {
+		backgroundColor: '#fff',
 	}
 });
 
@@ -70,7 +72,7 @@ class MainWrapper extends React.Component<any, any> {
 		const sideList = (
 			<div className={classes.list}>
 				<List>
-					<ListItem button onClick={() => push('/master')}>
+					<ListItem button onClick={() => push('/topics')}>
 						<ListItemIcon>
 							<Search />
 						</ListItemIcon>
@@ -91,6 +93,12 @@ class MainWrapper extends React.Component<any, any> {
 							<ListItemText primary="Мой профиль" />
 					</ListItem>
 
+					<ListItem button onClick={() => push('/login')}>
+						<ListItemIcon>
+							<Person />
+						</ListItemIcon>
+						<ListItemText primary="Sign up" />
+					</ListItem>
 				</List>
 
 				<Divider />
@@ -108,9 +116,9 @@ class MainWrapper extends React.Component<any, any> {
 
 		return (
 			<div>
-				<AppBar>
+				<AppBar className={classes.header}>
 					<Toolbar>
-						<IconButton className={classes.menuButton} color="contrast" aria-label="Menu"  onClick={this.toggleDrawer('left', true)}>
+						<IconButton className={classes.menuButton} color="inherit" aria-label="Menu"  onClick={this.toggleDrawer('left', true)}>
 							<MenuIcon />
 						</IconButton>
 						<Typography type="title" color="inherit" className={classes.flex}>
@@ -138,4 +146,4 @@ class MainWrapper extends React.Component<any, any> {
 	}
 }
 
-export default withRouter(withStyles(styles)(MainWrapper));
+export default withRouter(withStyles(styles as any)(MainWrapper));

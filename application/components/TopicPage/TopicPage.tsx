@@ -23,7 +23,7 @@ class TopicPage extends React.Component<any, any> {
 		const {loading, feed} = this.props.data;
 		const {progress, wrapper} = this.props.classes;
 
-		console.log(this.props.match);
+		console.log(this.props, 123);
 
 		return (
 			<div className={wrapper}>
@@ -36,7 +36,7 @@ class TopicPage extends React.Component<any, any> {
 						/>
 						:
 						<BaseCart
-							{...this.props.data.user}
+							{...this.props.data.master}
 						/>
 				}
 			</div>
@@ -44,8 +44,8 @@ class TopicPage extends React.Component<any, any> {
 	}
 }
 
-const MY_QUERY = gql`query ($id: Int!) {
-		user(id: $id) {
+const MY_QUERY = gql`query ($id: ID!) {
+		master(id: $id) {
 			name,
 			stars,
 			avatar	{
@@ -62,7 +62,7 @@ const MY_QUERY = gql`query ($id: Int!) {
 `;
 
 export default graphql(MY_QUERY, {
-	options(props) {
+	options(props: any) {
 		return {
 			variables: { id: props.match.params.idTopic }
 		}

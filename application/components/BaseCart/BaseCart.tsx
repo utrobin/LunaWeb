@@ -1,26 +1,28 @@
 import React from 'react';
-import {withStyles} from 'material-ui/styles';
 import {Link} from 'react-router-dom'
-import Card, { CardHeader, CardMedia, CardActions } from 'material-ui/Card';
-import Avatar from 'material-ui/Avatar';
-import {Delete, PregnantWoman, Cloud, Watch, Star, Bookmark, BookmarkBorder} from 'material-ui-icons';
-import {IconButton} from 'material-ui';
-import Typography from 'material-ui/Typography';
+import {withStyles} from 'material-ui/styles';
+import {IconButton, Avatar, Card, CardHeader, CardMedia, CardActions, Typography} from 'material-ui'
+import {Star, MoreVert, Comment} from 'material-ui-icons';
 import Slider from 'react-slick';
 
 import styles from './BaseCartStyles';
 
-const ICONS = new Map([
-	[1, {color: 'accent', component: <Delete />}],
-	[2, {color: 'primary', component: <Cloud />}],
-	[3, {color: 'default', component: <Watch />}],
-]);
-
 class BaseCart extends React.Component<any> {
 
+	getLinkWrapper(text: string | React.ReactNode) {
+		const {id} = this.props;
+
+		return (
+			<Link to={`/topics/${id}`}>
+				<Typography color="primary" type="body2">
+					{text}
+				</Typography>
+			</Link>
+		)
+	}
+
 	render() {
-		console.log(this.props);
-		const {classes, avatar, stars, photos, name, signs, id = 0} = this.props;
+		const {classes, avatar, stars, photos, name} = this.props;
 
 		const settings = {
 			arrows: false,
@@ -32,40 +34,33 @@ class BaseCart extends React.Component<any> {
 			dotsClass: 'slick-dots ' + classes.dots,
 		};
 
+		console.log(this.props);
+
 		return (
 			<div className={classes.wrapper}>
-				<Card className={classes.card}>
-					<Link to={`/topics/${id}`}>
-						<CardHeader
-							avatar={
+				<Card className={classes.card} elevation={2}>
+					{/*Шапка*/}
+					<CardHeader
+						avatar={
+							this.getLinkWrapper(
 								<Avatar
-									aria-label="Recipe"
 									className={classes.avatar}
 									src={avatar.path}
 								/>
-							}
-							title={`Мастер ${name}`}
-							subheader="Рядом с метро курская."
-						/>
-					</Link>
-
-					<div>
-						{
-							signs.map((el, i) => {
-								const {id} = el;
-
-								const {color, component} = ICONS.get(id);
-
-								return (
-									<IconButton aria-label="Delete" color={color} key={i}>
-										{component}
-									</IconButton>
-								)
-							})
+							)
 						}
-					</div>
+						title={this.getLinkWrapper(`Мастер ${name}`)}
+						subheader="Рядом с метро курская."
+						action={
+							<IconButton color="primary">
+								<MoreVert />
+							</IconButton>
+						}
+					/>
+					{/*Конец шапки*/}
 
-					{console.log(photos)}
+
+					{/*Слайдер фотографий*/}
 					<Slider {...{...settings, ...{dots: photos.length <= 1 ? false : true}}}>
 						{
 							photos.length ?
@@ -84,25 +79,30 @@ class BaseCart extends React.Component<any> {
 								/>
 						}
 					</Slider>
+					{/*Конец слайдера фотографий*/}
 
+					{/*Футер*/}
 					<CardActions className={classes.CardActions}>
-						<div className={classes.star}>
-							<IconButton disableRipple>
+						<div className={classes.icon}>
+							<IconButton color="primary" disableRipple>
 								<Star />
 							</IconButton>
-							<Typography color="secondary">{stars}</Typography>
+							<Typography color="primary">{stars}</Typography>
+							<Typography color="textSecondary">&nbsp;| 124 оценки</Typography>
 						</div>
 
-						<div className={classes.bookmark}>
-							<IconButton aria-label="Share">
-								<Bookmark />
+						<div className={classes.icon}>
+							<Typography color="textSecondary">34</Typography>
+							<IconButton color="primary" disableRipple>
+								<Comment />
 							</IconButton>
 						</div>
 					</CardActions>
+					{/*Конец футера*/}
 				</Card>
 			</div>
 		)
 	}
 }
 
-export default withStyles(styles)(BaseCart);
+export default withStyles<any>(styles)(BaseCart);

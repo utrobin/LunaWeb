@@ -1,11 +1,11 @@
 import red from 'material-ui/colors/red';
 
-export default theme => ({
+export default (theme): any => ({
 	card: {
 		margin: 15,
 	},
 	media: {
-		height: 194,
+		height: 280,
 	},
 	expand: {
 		transform: 'rotate(0deg)',
@@ -29,14 +29,21 @@ export default theme => ({
 		width: '100%',
 		maxWidth: 520,
 	},
-	star: {
+	icon: {
 		display: 'flex',
 		alignItems: 'center',
+		cursor: 'base',
 	},
 	CardActions: {
 		justifyContent: 'space-between',
 	},
 	dots: {
 		bottom: -38,
+	},
+	'@media (max-width: 480px)': {
+		card: {
+			margin: '5px 0px',
+			boxShadow: 'none',
+		},
 	},
 });

@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const packageJson = require('./package.json');
 
 const url = '/';
@@ -46,9 +47,7 @@ module.exports = {
 			filename: path.resolve(__dirname, './dist', 'index.html')
 		}),
 		new ExtractTextPlugin(path.join('css', '[name].css')),
-		new webpack.ProvidePlugin({
-			i18n: 'mrg-i18n-utils',
-		}),
+		new BundleAnalyzerPlugin()
 	],
 
 	devtool: 'inline-source-map',
