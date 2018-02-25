@@ -79,13 +79,6 @@ class MainWrapper extends React.Component<any, any> {
 						<ListItemText primary="Поиск" />
 					</ListItem>
 
-					<ListItem button onClick={() => push('/map')}>
-						<ListItemIcon>
-							<LocationOn />
-						</ListItemIcon>
-						<ListItemText primary="Карта" />
-					</ListItem>
-
 					<ListItem button>
 						<ListItemIcon>
 							<AccountCircle />
@@ -93,11 +86,18 @@ class MainWrapper extends React.Component<any, any> {
 							<ListItemText primary="Мой профиль" />
 					</ListItem>
 
-					<ListItem button onClick={() => push('/login')}>
+					<ListItem button onClick={() => push('/signup')}>
 						<ListItemIcon>
 							<Person />
 						</ListItemIcon>
 						<ListItemText primary="Sign up" />
+					</ListItem>
+
+					<ListItem button onClick={() => push('/signin')}>
+						<ListItemIcon>
+							<Person />
+						</ListItemIcon>
+						<ListItemText primary="Sign in" />
 					</ListItem>
 				</List>
 
@@ -118,10 +118,10 @@ class MainWrapper extends React.Component<any, any> {
 			<div>
 				<AppBar className={classes.header}>
 					<Toolbar>
-						<IconButton className={classes.menuButton} color="inherit" aria-label="Menu"  onClick={this.toggleDrawer('left', true)}>
+						<IconButton className={classes.menuButton} color="primary" aria-label="Menu"  onClick={this.toggleDrawer('left', true)}>
 							<MenuIcon />
 						</IconButton>
-						<Typography type="title" color="inherit" className={classes.flex}>
+						<Typography variant="title" color="primary" className={classes.flex}>
 							Luna
 						</Typography>
 					</Toolbar>

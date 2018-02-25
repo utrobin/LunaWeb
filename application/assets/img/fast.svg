@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 32 32">
+    <defs>
+        <rect id="a" width="32" height="32" rx="16"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <mask id="b" fill="#fff">
+            <use xlink:href="#a"/>
+        </mask>
+        <use fill="#FB9E9E" fill-opacity=".7" xlink:href="#a"/>
+        <path fill="#FFF" d="M15.127 23.931l.318-4.784 4.3-4.32-1.048 5.962a.503.503 0 0 1-.14.27l-3.037 3.052c-.15.151-.407.034-.393-.18M8.354 17.126l4.675-.314a.234.234 0 0 0 .148-.067l3.721-3.739c.16-.16.018-.432-.203-.392l-5.299.94a.222.222 0 0 0-.123.064l-3.098 3.113a.232.232 0 0 0 .179.395" mask="url(#b)"/>
+        <path stroke="#FFF" stroke-linecap="round" stroke-width="2" d="M13.937 18.277l-1.904 1.912" mask="url(#b)"/>
+        <path stroke="#FFF" stroke-linecap="round" d="M10.447 21.783l-1.903 1.912" mask="url(#b)"/>
+        <path fill="#FFF" d="M18.446 13.791a1.066 1.066 0 0 1 0-1.503 1.055 1.055 0 0 1 1.495 0 1.067 1.067 0 0 1 0 1.503 1.054 1.054 0 0 1-1.495 0m4.993-4.79a.202.202 0 0 0-.225-.227c-1.027.114-5.01.722-7.753 3.478-1.637 1.645-4.176 5.595-4.176 5.595l3.125 3.14s3.93-2.552 5.567-4.197c2.744-2.756 3.349-6.758 3.462-7.79" mask="url(#b)"/>
+        <path stroke="#FFF" stroke-linecap="round" d="M9.903 19.05L8 20.963M13.166 22.33l-1.903 1.912" mask="url(#b)"/>
+    </g>
+</svg>

@@ -1,17 +1,17 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom'
 import SearchPage from '../components/SearchPage/SearchPage';
-import MapPage from '../components/MapPage/MapPage';
 import MainWrapper from '../components/MainWrapper/MainWrapper';
 import MasterPag from '../components/TopicPage/TopicPage';
 import SignUpPage from '../components/SignUpPage/SignUpPage';
+import SignInPage from '../components/SignInPage/SignInPage';
 
 const Routing = () => (
 	<div>
 		<MainWrapper>
-			<Route exact path='/' component={SignUpPage}/>
-			<Route path='/map' component={MapPage}/>
-			<Route path='/login' component={SignUpPage}/>
+			<Route exact path='/' component={SearchPage}/>
+			<Route path='/signin' component={SignInPage}/>
+			<Route path='/signup' component={SignUpPage}/>
 
 			<Switch>
 				<Route path={`/topics/:idTopic`} component={MasterPag} />

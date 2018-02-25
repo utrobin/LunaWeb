@@ -38,12 +38,77 @@ export default (theme): any => ({
 		justifyContent: 'space-between',
 	},
 	dots: {
-		bottom: -38,
+		position: 'absolute',
+		bottom: 'auto',
+
+		'& li.slick-active button:before': {
+			color: theme.palette.primary.main,
+		},
+
+		'& li': {
+			width: 4,
+			height: 4,
+			padding: 0,
+			margin: '0 5px'
+		},
+
+		'& li button': {
+			width: 4,
+			height: 4,
+			padding: 0,
+		},
+
+		'& li button:before': {
+			width: 4,
+			height: 4,
+			padding: 0,
+			lineHeight: '7px;'
+		},
 	},
 	'@media (max-width: 480px)': {
 		card: {
-			margin: '5px 0px',
+			margin: '1px 0px',
 			boxShadow: 'none',
 		},
 	},
+
+	iconMetro: {
+		width: 8,
+		height: 8,
+		borderRadius: 12,
+		backgroundColor: '#824ab3',
+		marginRight: 4,
+		display: 'inline-flex'
+	},
+
+	photos: {
+		position: 'relative',
+	},
+
+	price: {
+		position: 'absolute',
+		top: 18,
+		left: 16,
+		backgroundColor: theme.palette.background.default,
+		borderRadius: 14,
+		opacity: 0.7,
+		padding: '4px 12px'
+	},
+
+	icons: {
+		position: 'absolute',
+		right: 16,
+		top: 18,
+
+		'& i': {
+			padding: 4,
+			backgroundColor: theme.palette.primary.main,
+			marginLeft: 4,
+		},
+
+		'& svg': {
+			height: 16,
+			width: 16,
+		}
+	}
 });

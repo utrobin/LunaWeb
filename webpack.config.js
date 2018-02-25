@@ -26,14 +26,13 @@ module.exports = {
 				loader: [
 					'awesome-typescript-loader',
 				],
-			},
-			{
+			}, {
+				test: /\.svg$/,
+				loader: 'svg-inline-loader'
+			}, {
 				test: /\.css/,
 				loader: ExtractTextPlugin.extract('css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader')
-			}, {
-				test: /\.png$/,
-				loader: "url-loader?limit=10000000"
-			}
+			},
 		]
 	},
 
@@ -47,13 +46,13 @@ module.exports = {
 			filename: path.resolve(__dirname, './dist', 'index.html')
 		}),
 		new ExtractTextPlugin(path.join('css', '[name].css')),
-		new BundleAnalyzerPlugin()
 	],
 
 	devtool: 'inline-source-map',
 
 	devServer: {
 		contentBase: path.join(__dirname, './dist'),
+		historyApiFallback: true,
 		compress: true,
 		port: 2017,
 	}

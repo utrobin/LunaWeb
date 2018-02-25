@@ -48,7 +48,7 @@ const SignUpForm = (props) => {
 				variant="headline"
 				component="h3"
 			>
-				Sign up to Luna
+				Sign in to Luna
 			</Typography>
 
 			<form onSubmit={handleSubmit}>
@@ -77,7 +77,7 @@ const SignUpForm = (props) => {
 					disabled={submitting}
 					className={classes.button}
 				>
-					Sign up
+					Sign in
 				</Button>
 			</form>
 		</Paper>
@@ -97,8 +97,6 @@ const validate = (values) => {
 
 	if (!values.password) {
 		errors.password = 'Обязательное поле';
-	} else if (values.password.length <= 3) {
-		errors.password = 'Must be at least 4 characters';
 	}
 
 	return errors;
@@ -106,6 +104,6 @@ const validate = (values) => {
 
 // Decorate the form component
 export default reduxForm({
-	form: 'SignUpForm', // a unique name for this form
+	form: 'SignInForm', // a unique name for this form
 	validate
 })(withStyles(styles)(SignUpForm));

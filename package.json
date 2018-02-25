@@ -42,7 +42,7 @@
     "isomorphic-fetch": "^2.2.1",
     "jit-grunt": "^0.9.0",
     "lodash-es": "^4.17.4",
-    "material-ui": "^1.0.0-beta.30",
+    "material-ui": "^1.0.0-beta.34",
     "material-ui-icons": "^1.0.0-beta.17",
     "mkdirp": "^0.5.1",
     "node-sass": "4.5.0",
@@ -62,6 +62,11 @@
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-slick": "^0.16.0",
+    "react-star-rating": "^1.4.2",
+    "react-stars": "^2.2.5",
+    "react-svg-icons": "^0.3.0",
+    "react-virtualized": "^9.18.5",
+    "react-yandex-maps": "^500.0.0",
     "recursive-readdir": "^1.2.1",
     "redux": "^3.6.0",
     "redux-actions": "^2.0.2",
@@ -74,6 +79,7 @@
     "slick-carousel": "^1.8.1",
     "source-map-loader": "^0.2.1",
     "style-loader": "^0.17.0",
+    "svg-inline-react": "^3.0.0",
     "svg-url-loader": "^2.3.1",
     "svgson-loader": "^1.1.0",
     "symbol-observable": "^1.1.0",
@@ -108,6 +114,7 @@
   "devDependencies": {
     "graphql": "^0.11.7",
     "redux-devtools-extension": "^2.13.2",
+    "svg-inline-loader": "^0.8.0",
     "webpack-bundle-analyzer": "^2.10.0"
   }
 }
