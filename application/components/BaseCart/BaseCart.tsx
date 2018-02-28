@@ -4,11 +4,14 @@ import {withStyles} from 'material-ui/styles';
 import {IconButton, Avatar, Card, CardHeader, CardMedia, CardActions, Typography} from 'material-ui'
 import Menu, { MenuItem } from 'material-ui/Menu';
 import InlineSVG from 'svg-inline-react';
-import {Star, MoreVert, Comment} from 'material-ui-icons';
+import {MoreVert} from 'material-ui-icons';
 import Slider from 'react-slick';
 
+import starsSvg from '../../assets/img/stars.svg';
 import neatlySvg from '../../assets/img/neatly.svg';
 import palletSvg from '../../assets/img/pallet.svg';
+import fastSvg from '../../assets/img/fast.svg';
+import commentSvg from '../../assets/img/comment.svg';
 import styles from './BaseCartStyles';
 
 class BaseCart extends React.Component<any> {
@@ -88,51 +91,54 @@ class BaseCart extends React.Component<any> {
 
 					{/*Слайдер фотографий*/}
 					<div className={classes.photos}>
-						<Slider {...{...settings, ...{dots: photos.length <= 1 ? false : true}}}>
-							{
-								photos.length ?
-									photos.map((el, i) =>
-										<div key={i}>
-											<CardMedia
-												className={classes.media}
-												image={el.path}
-											/>
-										</div>
-									)
-									:
-									<CardMedia
-										className={classes.media}
-										image="https://utrobin.com/static/img/plug.jpg"
-									/>
-							}
-						</Slider>
-
-						<div className={classes.price}>
-							<Typography variant="body1" style={{lineHeight: '1em'}}>1 300 — 2 800 ₽</Typography>
+						<div className={classes.ratio}>
+							<div className={classes.ratioInner}>
+								<div className={classes.ratioContent}>
+									<Slider {...{...settings, ...{dots: photos.length <= 1 ? false : true}}}>
+										{
+											photos.length ?
+												photos.map((el, i) =>
+													<div key={i} className={classes.media}>
+														<CardMedia
+															className={classes.media}
+															image={el.path}
+														/>
+													</div>
+												)
+												:
+												<CardMedia
+													className={classes.media}
+													image="https://utrobin.com/static/img/plug.jpg"
+												/>
+										}
+									</Slider>
+								</div>
+							</div>
 						</div>
 
-						{/*<div className={classes.icons}>*/}
-							{/*<InlineSVG src={palletSvg} />*/}
-							{/*<InlineSVG src={neatlySvg} />*/}
-						{/*</div>*/}
+						<div className={classes.price}>
+							<Typography variant="body2" color="textSecondary">1 300 — 2 800 ₽</Typography>
+						</div>
+
+						<div className={classes.icons}>
+							<InlineSVG src={palletSvg} />
+							<InlineSVG src={neatlySvg} />
+							<InlineSVG src={fastSvg} />
+						</div>
 					</div>
 					{/*Конец слайдера фотографий*/}
 
 					{/*Футер*/}
 					<CardActions className={classes.CardActions}>
 						<div className={classes.icon}>
-							<IconButton disableRipple>
-								<Star />
-							</IconButton>
+							<InlineSVG src={starsSvg} className={classes.svg}/>
 							<Typography variant="body2">{stars / 10}</Typography>
 							<Typography color="textSecondary">&nbsp;| 124 оценки</Typography>
 						</div>
 
 						<div className={classes.icon}>
-							<Typography color="textSecondary">34</Typography>
-							<IconButton disableRipple>
-								<Comment />
-							</IconButton>
+							<Typography variant="body2">34</Typography>
+							<InlineSVG src={commentSvg} className={classes.svg}/>
 						</div>
 					</CardActions>
 					{/*Конец футера*/}

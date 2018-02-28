@@ -1,6 +1,7 @@
 import React from 'react';
 import {graphql} from 'react-apollo';
 import ReactStars from 'react-stars';
+import Color from 'color';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Button from 'material-ui/Button';
 import Room from 'material-ui-icons/Room';
@@ -8,12 +9,16 @@ import InlineSVG from 'svg-inline-react';
 import {CircularProgress, Typography, CardMedia, Divider} from 'material-ui';
 import AccessAlarmIcon from 'material-ui-icons/AccessAlarm';
 import theme from '../../theme';
+import Map from '../Map';
 import BaseCart from '../BaseCart/BaseCart';
 import gql from 'graphql-tag';
 import {withStyles} from "material-ui/styles";
+import Lightbox from "react-image-lightbox";
 
+import photosSvg from '../../assets/img/photos.svg';
 import neatlySvg from '../../assets/img/neatly.svg';
 import palletSvg from '../../assets/img/pallet.svg';
+import fastSvg from '../../assets/img/fast.svg';
 
 const styles = (theme): any => ({
 	progress: {
@@ -23,8 +28,8 @@ const styles = (theme): any => ({
 		padding: 16,
 	},
 	photo: {
-		height: 200
-	},
+		height: '100%',
+},
 	stars: {
 		'& span': {
 			marginRight: 4,
@@ -60,10 +65,16 @@ const styles = (theme): any => ({
 		alignItems: 'center',
 		marginRight: 12,
 
+		'& i': {
+			display: 'flex',
+		},
 		'& svg': {
 			marginRight: 6,
-			width: 18,
-			height: 18,
+			width: 20,
+			height: 20,
+		},
+		'& path': {
+			fill: theme.palette.text.secondary
 		}
 	},
 	wrapperSign: {
@@ -101,7 +112,54 @@ const styles = (theme): any => ({
 	},
 	registrationTitle: {
 		marginTop: 20,
+	},
+	ratio: {
+		maxHeight: 400,
+		width: '100%',
+		position: 'relative',
+	},
+	ratioInner: {
+		position: 'relative',
+		height: 0,
+		border: 'none',
+		paddingTop: '56.25%',
+	},
+	ratioContent: {
+		maxHeight: 400,
+		position: 'absolute',
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	},
+	gallery: {
+		position: 'absolute',
+		bottom: 16,
+		right: 16,
+		backgroundColor: Color(theme.palette.primary.main).alpha(0.7).string(),
+		color: theme.palette.background.default,
+		borderRadius: 28,
+		padding: '4px 12px',
+		height: 28,
+		display: 'flex',
+
+		'& *': {
+			margin: 'auto',
+		}
+	},
+	viewer: {
+		zIndex: 99999999,
+	},
+	svg: {
+		height: 16,
+		width: 16,
+		marginLeft: 8,
+
+		'& path': {
+			fill: theme.palette.background.default,
+		}
 	}
+
 });
 
 const signs = [
@@ -113,6 +171,10 @@ const signs = [
 		img: neatlySvg,
 		name: 'Аккуратно',
 		amount: 128,
+	}, {
+		img: fastSvg,
+		name: 'Быстро',
+		amount: 83,
 	}, {
 		img: palletSvg,
 		name: 'Большой выбор лаков',
@@ -145,12 +207,28 @@ const comments = [
 ];
 
 class TopicPage extends React.Component<any, any> {
+	state = {
+		open: false,
+		visible: false,
+		photoIndex: 0,
+	};
+
+	handleClickOpen = () => {
+		console.log(11);
+		this.setState({ open: true });
+	};
+
+	handleClose = () => {
+		this.setState({ open: false });
+	};
 
 	render() {
 		console.log(this.props, theme);
 
 		const {loading, master} = this.props.data;
 		const {classes} = this.props;
+
+		const {photoIndex} = this.state;
 
 		if (loading) {
 			return <div style={{textAlign: 'center'}}>
@@ -163,13 +241,24 @@ class TopicPage extends React.Component<any, any> {
 		}
 
 		const {name, stars, photos} = master;
-		console.log(master);
+
 		return (
 			<div>
-				<CardMedia
-					className={classes.photo}
-					image={photos[0].path}
-				/>
+				<div className={classes.ratio}>
+					<div className={classes.ratioInner}>
+						<div className={classes.ratioContent} onClick={() => {this.setState({ visible: !this.state.visible }); } }>
+							<CardMedia
+								className={classes.photo}
+								image={photos[photoIndex].path}
+							/>
+						</div>
+					</div>
+
+					<div className={classes.gallery}>
+						<Typography variant="body2" color="inherit">{photoIndex + 1}/{photos.length}</Typography>
+						<InlineSVG src={photosSvg} className={classes.svg}/>
+					</div>
+				</div>
 
 				<div className={classes.wrapper}>
 					<Typography variant="title" gutterBottom>Mастер {name}</Typography>
@@ -224,6 +313,7 @@ class TopicPage extends React.Component<any, any> {
 							</div>
 
 							<Button
+								onClick={this.handleClickOpen}
 								variant="fab"
 								className={classes.mapButton}
 								color="primary"
@@ -231,6 +321,16 @@ class TopicPage extends React.Component<any, any> {
 							>
 								<Room />
 							</Button>
+
+							<Map
+								open={this.state.open}
+								handleClose={this.handleClose}
+								title="Адрес салона или мастера"
+								address={{
+									lat: 55.796931,
+									lon: 37.537847,
+								}}
+							/>
 						</div>
 					<Divider />
 
@@ -256,6 +356,33 @@ class TopicPage extends React.Component<any, any> {
 					<Divider />
 
 					<Typography color="default" className={classes.registrationTitle}>ПАРАМЕТРЫ ПОСЕЩЕНИЯ</Typography>
+
+					{
+						this.state.visible && (
+							<Lightbox
+								mainSrc={photos[photoIndex].path}
+								nextSrc={photos[(photoIndex + 1) % photos.length].path}
+								prevSrc={photos[(photoIndex + photos.length - 1) % photos.length].path}
+								onCloseRequest={() => this.setState({ visible: false })}
+								onMovePrevRequest={
+									() =>
+									this.setState({
+										photoIndex: (photoIndex + photos.length - 1) % photos.length
+									})
+								}
+								onMoveNextRequest={
+									() =>
+									this.setState({
+										photoIndex: (photoIndex + 1) % photos.length
+									})
+								}
+								wrapperClassName={classes.viewer}
+								enableZoom={false}
+								toolbarButtons={[<div />, <div />]}
+							/>
+						)
+					}
+
 				</div>
 			</div>
 		);
@@ -263,20 +390,24 @@ class TopicPage extends React.Component<any, any> {
 }
 
 const MY_QUERY = gql`query ($id: ID!) {
-		master(id: $id) {
-			name,
-			stars,
-			avatar	{
-				path
-			}
-			photos	{
-				path
-			}
-			signs {
-				id
-			}
-  	}
+	master(id: $id) {
+		name,
+		stars,
+		avatar	{
+			path
+		}
+		photos	{
+			path
+		}
+		signs {
+			id
+		}
+		address {
+			lat
+			lon
+		}	
 	}
+}
 `;
 
 export default graphql(MY_QUERY, {

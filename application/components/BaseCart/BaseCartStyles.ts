@@ -1,11 +1,32 @@
 import red from 'material-ui/colors/red';
+import Color from 'color';
 
 export default (theme): any => ({
 	card: {
 		margin: 15,
 	},
+	ratio: {
+		width: '100%',
+	},
 	media: {
-		height: 280,
+		height: 'inherit',
+	},
+	ratioInner: {
+		position: 'relative',
+		height: 0,
+		border: 'none',
+		paddingTop: '56.25%',
+	},
+	ratioContent: {
+		position: 'absolute',
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+
+		'& .slick-slider, & .slick-list, & .slick-track': {
+			height: '100%',
+		}
 	},
 	expand: {
 		transform: 'rotate(0deg)',
@@ -89,26 +110,50 @@ export default (theme): any => ({
 		position: 'absolute',
 		top: 18,
 		left: 16,
-		backgroundColor: theme.palette.background.default,
-		borderRadius: 14,
-		opacity: 0.7,
-		padding: '4px 12px'
+		backgroundColor: Color(theme.palette.background.default).alpha(0.7).string(),
+		borderRadius: 28,
+		padding: '4px 12px',
+		height: 28,
+		display: 'flex',
+
+		'& *': {
+			margin: 'auto',
+		}
 	},
 
 	icons: {
+		display: 'flex',
 		position: 'absolute',
 		right: 16,
 		top: 18,
 
 		'& i': {
+			height: 28,
+			width: 28,
+			borderRadius: 28,
+			display: 'flex',
 			padding: 4,
-			backgroundColor: theme.palette.primary.main,
+			backgroundColor: Color(theme.palette.primary.main).alpha(0.7).string(),
 			marginLeft: 4,
 		},
 
 		'& svg': {
-			height: 16,
-			width: 16,
+			height: 26,
+			width: 26,
+			margin: 'auto',
+		},
+
+		'& path': {
+			fill: theme.palette.background.default,
 		}
+	},
+
+	svg: {
+		width: 24,
+		height: 24,
+		padding: 4,
+		'& path': {
+			fill: theme.palette.text.secondary
+		},
 	}
 });

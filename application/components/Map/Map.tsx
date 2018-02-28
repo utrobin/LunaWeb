@@ -39,7 +39,7 @@ class Map extends React.Component<any, any> {
 	};
 
 	render() {
-		const {open, handleClose, classes} = this.props;
+		const {open, handleClose, classes, address, title} = this.props;
 
 		return (
 			<Dialog
@@ -54,7 +54,7 @@ class Map extends React.Component<any, any> {
 							<CloseIcon />
 						</IconButton>
 						<Typography variant="title" color="inherit" className={classes.flex}>
-							Поиск по карте
+							{title || 'Поиск по карте'}
 						</Typography>
 					</Toolbar>
 				</AppBar>
@@ -65,23 +65,37 @@ class Map extends React.Component<any, any> {
 
 				<YMaps onApiAvaliable={() => this.setState({loading: false})}>
 					<YMap
-						state={mapState}
+						state={address ? {zoom: 16, center: [address.lat, address.lon]} : mapState}
 						width={"100%"}
 						height={"100%"}
 					>
-						<ObjectManager
-							options={{
-								clusterize: true,
-								gridSize: 32,
-							}}
-							objects={{
-								preset: 'islands#greenDotIcon',
-							}}
-							clusters={{
-								preset: 'islands#greenClusterIcons',
-							}}
-							features={data.features}
-						/>
+						{
+							address ?
+							<Placemark
+								geometry={{
+									coordinates: [address.lat, address.lon]
+								}}
+								properties={{
+									hintContent: 'Собственный значок метки',
+									balloonContent: 'Это красивая метка'
+								}}
+							/>
+							:
+							<ObjectManager
+								options={{
+									clusterize: true,
+									gridSize: 32,
+								}}
+								objects={{
+									preset: 'islands#greenDotIcon',
+								}}
+								clusters={{
+									preset: 'islands#greenClusterIcons',
+								}}
+								features={data.features}
+							/>
+						}
+
 					</YMap>
 				</YMaps>
 
