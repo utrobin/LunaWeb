@@ -38,7 +38,7 @@ class BaseCart extends React.Component<any> {
 	}
 
 	render() {
-		const {classes, avatar, stars, photos, name} = this.props;
+		const {classes, avatar, stars, photos, name, style} = this.props;
 		const { anchorEl } = this.state;
 
 		const settings = {
@@ -52,7 +52,7 @@ class BaseCart extends React.Component<any> {
 		};
 
 		return (
-			<div className={classes.wrapper}>
+			<div className={classes.wrapper} style={style}>
 				<Card className={classes.card} elevation={2}>
 					{/*Шапка*/}
 					<CardHeader

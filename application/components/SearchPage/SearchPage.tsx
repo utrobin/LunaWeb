@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from "react-redux";
 import {withStyles} from 'material-ui/styles';
-import { List as InfiniteList, InfiniteLoader } from 'react-virtualized';
+import { List as InfiniteList, InfiniteLoader, WindowScroller, AutoSizer } from 'react-virtualized';
 import BottomNavigationButton from 'material-ui/BottomNavigation';
 import { Switch, Route, Link } from 'react-router-dom';
 import Button from 'material-ui/Button';
@@ -34,15 +34,6 @@ const styles = (theme): any => ({
 	}
 });
 
-const remoteRowCount = 1000;
-
-const list = [];
-
-function isRowLoaded ({ index }) {
-	return !!list[index];
-}
-
-
 class SearchPage extends React.Component<any, any> {
 	state = {
 		open: false,
@@ -56,27 +47,58 @@ class SearchPage extends React.Component<any, any> {
 		this.setState({ open: false });
 	};
 
+	_rowRenderer = ({index, key, style}) => {
+
+		return (
+			<BaseCart
+				key={key}
+				style={style}
+				{...this.props.feed[index]}
+			/>
+		);
+	};
+
+	_isRowLoaded = ({ index }) => index < this.props.feed.length - 1;
+
 	render() {
 		const {loading, feed, loadMoreEntries} = this.props;
 		const {progress, wrapper, fab}: any = this.props.classes;
 
 		return (
 			<div className={wrapper}>
-				{
-					loading ?
-						<CircularProgress
-							className={progress}
-							thickness={5}
-							size={50}
-						/>
-						:
-						feed.map((el, i) =>
-							<BaseCart
-								key={i}
-								{...el}
-							/>
-						)
-				}
+				<div style={{flex: '1 1 auto', position: 'relative'}}>
+					{
+						feed &&
+						<InfiniteLoader
+							isRowLoaded={this._isRowLoaded}
+							loadMoreRows={loadMoreEntries}
+							rowCount={feed.length}>
+							{({onRowsRendered, registerChild}) => (
+								<WindowScroller>
+									{({ height, scrollTop }) => (
+										<div style={{flex: '1 1 auto'}}>
+											<AutoSizer disableHeight>
+												{({width}) => (
+													<InfiniteList
+														ref={registerChild}
+														height={height}
+														onRowsRendered={onRowsRendered}
+														rowCount={feed.length}
+														rowHeight={400}
+														rowRenderer={this._rowRenderer}
+														width={width}
+														scrollTop={scrollTop}
+														autoHeight
+													/>
+												)}
+											</AutoSizer>
+										</div>
+									)}
+								</WindowScroller>
+							)}
+						</InfiniteLoader>
+					}
+				</div>
 
 				<Button
 					onClick={this.handleClickOpen}
