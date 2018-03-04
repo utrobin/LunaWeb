@@ -1,19 +1,13 @@
 import React from 'react';
 import {connect} from "react-redux";
 import {withStyles} from 'material-ui/styles';
-import { List as InfiniteList, InfiniteLoader, WindowScroller, AutoSizer } from 'react-virtualized';
-import BottomNavigationButton from 'material-ui/BottomNavigation';
-import { Switch, Route, Link } from 'react-router-dom';
+import { CircularProgress } from 'material-ui/Progress';
+import {InfiniteLoader, WindowScroller, AutoSizer, Grid, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
+import {Switch, Route, Link} from 'react-router-dom';
 import Button from 'material-ui/Button';
 import Room from 'material-ui-icons/Room';
-import {Search, AccountCircle, LocationOn, Announcement} from 'material-ui-icons';
 import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import {AppBar, Toolbar, IconButton, Drawer, Divider, CircularProgress} from 'material-ui';
-import Typography from 'material-ui/Typography';
-import MenuIcon from 'material-ui-icons/Menu';
-import MasterPage from '../TopicPage/TopicPage';
+import {graphql} from 'react-apollo';
 import BaseCart from '../BaseCart/BaseCart';
 import Map from '../Map';
 
@@ -27,17 +21,45 @@ const styles = (theme): any => ({
 		marginTop: 20,
 	},
 	wrapper: {
-		display: 'flex',
-		justifyContent: 'space-around',
-		flexWrap: 'wrap',
 		backgroundColor: theme.palette.background.default,
 	}
 });
 
 class SearchPage extends React.Component<any, any> {
-	state = {
-		open: false,
-	};
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			columnCount: 1,
+			columnWidth: 100,
+			open: false,
+		};
+
+		this._cache = new CellMeasurerCache({
+			fixedWidth: true,
+			defaultHeight: 300
+		});
+	}
+
+	componentWillUpdate(nextProps, nextState) {
+		const {columnCount} = this.state;
+
+		let rowCount = 0;
+		if (this.props.feed) {
+			rowCount = this.props.feed.length;
+		}
+
+		if (nextProps.feed) {
+			if (
+				rowCount !== nextProps.feed.length &&
+				nextProps.feed.length > rowCount
+			) {
+				for (let i = 0; i < columnCount; i++) {
+					this._cache.clear(this._lastLoadingIndex, i);
+				}
+			}
+		}
+	}
 
 	handleClickOpen = () => {
 		this.setState({ open: true });
@@ -47,55 +69,131 @@ class SearchPage extends React.Component<any, any> {
 		this.setState({ open: false });
 	};
 
-	_rowRenderer = ({index, key, style}) => {
+	_cellRenderer = ({ key, rowIndex, columnIndex, parent, style }) => {
+		const {columnCount, columnWidth} = this.state;
+		const rowCount = this.props.feed.length;
+
+		let content;
+
+		// Render cell content
+		if (rowIndex < rowCount - 1) {
+			content = (
+				<div style={style}>
+					<BaseCart
+						key={key}
+						{...this.props.feed[rowIndex * 1 + columnIndex]}
+					/>
+				</div>
+			);
+		}
+
+		// Render "loading" content
+		else if (columnIndex === 0) {
+			// Remember this `index` so we can clear its measurements from the cache later
+			this._lastLoadingIndex = rowIndex;
+
+			const cellStyle = Object.assign({}, style, {
+				width: (columnWidth * columnCount), // Give loader the full grid width
+				textAlign: 'center'
+			});
+
+			content = <div style={cellStyle}><CircularProgress /></div>;
+		} else {
+			content = <div style={style} />;
+		}
 
 		return (
-			<BaseCart
+			<CellMeasurer
 				key={key}
-				style={style}
-				{...this.props.feed[index]}
-			/>
+				cache={this._cache}
+				parent={parent}
+				columnIndex={columnIndex}
+				rowIndex={rowIndex}
+			>
+				{content}
+			</CellMeasurer>
 		);
-	};
+	}
 
 	_isRowLoaded = ({ index }) => index < this.props.feed.length - 1;
+
+	_onSectionRendered = ({ rowStartIndex, rowStopIndex }) => {
+		this._onRowsRendered({
+			startIndex: rowStartIndex,
+			stopIndex: rowStopIndex
+		});
+	};
+
+	_onResize = ({ width }) => {
+		const { columnCount } = this.state;
+
+		this.setState({
+			columnWidth: (width) / columnCount
+		});
+
+		this._cache.clearAll();
+		this._grid.recomputeGridSize();
+	}
+
+	_loadMoreRows = () => {
+		if (!this.props.loading) {
+			return this.props.loadMoreEntries();
+		}
+	};
 
 	render() {
 		const {loading, feed, loadMoreEntries} = this.props;
 		const {progress, wrapper, fab}: any = this.props.classes;
+		const { columnCount, columnWidth} = this.state;
 
 		return (
 			<div className={wrapper}>
-				<div style={{flex: '1 1 auto', position: 'relative'}}>
+				<div className="container-fluid">
 					{
 						feed &&
 						<InfiniteLoader
 							isRowLoaded={this._isRowLoaded}
-							loadMoreRows={loadMoreEntries}
-							rowCount={feed.length}>
-							{({onRowsRendered, registerChild}) => (
-								<WindowScroller>
-									{({ height, scrollTop }) => (
-										<div style={{flex: '1 1 auto'}}>
-											<AutoSizer disableHeight>
-												{({width}) => (
-													<InfiniteList
-														ref={registerChild}
-														height={height}
-														onRowsRendered={onRowsRendered}
-														rowCount={feed.length}
-														rowHeight={400}
-														rowRenderer={this._rowRenderer}
-														width={width}
-														scrollTop={scrollTop}
-														autoHeight
-													/>
-												)}
-											</AutoSizer>
-										</div>
-									)}
-								</WindowScroller>
-							)}
+							loadMoreRows={this._loadMoreRows}
+							rowCount={feed.length}
+						>
+							{
+								({onRowsRendered, registerChild}) => {
+									this._onRowsRendered = onRowsRendered;
+									return (
+										<WindowScroller>
+											{({ height, scrollTop }) => (
+												<AutoSizer
+													disableHeight
+													onResize={this._onResize}
+												>
+													{({ width }) => (
+														<Grid
+															autoHeight
+															width={width}
+															height={height}
+															scrollTop={scrollTop}
+
+															ref={grid => {
+																this._grid = grid;
+																registerChild(grid);
+															}}
+
+															columnWidth={columnWidth}
+															columnCount={columnCount}
+
+															rowCount={feed.length}
+															rowHeight={this._cache.rowHeight}
+
+															cellRenderer={this._cellRenderer}
+															onSectionRendered={this._onSectionRendered}
+														/>
+													)}
+												</AutoSizer>
+											)}
+										</WindowScroller>
+									)
+								}
+							}
 						</InfiniteLoader>
 					}
 				</div>
@@ -141,7 +239,7 @@ const QUERY = gql`query Feed($offset: Int!, $limit: Int!)  {
 	}
 }`;
 
-const ITEMS_PER_PAGE = 6;
+const ITEMS_PER_PAGE = 12;
 
 export default graphql(QUERY, {
 	options(props) {

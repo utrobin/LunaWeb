@@ -48,6 +48,7 @@ export default (theme): any => ({
 	},
 	wrapper: {
 		width: '100%',
+		margin: 'auto',
 		maxWidth: 520,
 	},
 	icon: {
