@@ -38,7 +38,8 @@ class BaseCart extends React.Component<any> {
 	}
 
 	render() {
-		const {classes, avatar, stars, photos, name, style} = this.props;
+		const {classes, avatar, stars, photos, name, style, address} = this.props;
+		const {description, stations} = address;
 		const { anchorEl } = this.state;
 
 		const settings = {
@@ -66,9 +67,16 @@ class BaseCart extends React.Component<any> {
 						}
 						title={this.getLinkWrapper(<Typography variant="body2">Мастер {name}</Typography>)}
 						subheader={
+							description === 'Not found' ?
+							<div />
+								:
 							<div>
-								<i className={classes.iconMetro}/>
-								Баррикадная. Кудринский переулок, 31
+								{
+									stations[0] &&
+									<i className={classes.iconMetro} style={{backgroundColor: '#' + stations[0].color}}/>
+								}
+
+								{stations[0] && stations[0].name + '. '}{description}
 							</div>
 						}
 						action={

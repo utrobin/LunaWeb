@@ -1,8 +1,10 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
-import {Search, AccountCircle, LocationOn, Announcement, Person} from 'material-ui-icons';
+import {Search, AccountCircle, LocationOn, Announcement, Person, Sort} from 'material-ui-icons';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import {AppBar, Toolbar, IconButton, Drawer, Divider} from 'material-ui';
+import Button from 'material-ui/Button';
+import Collapse from 'material-ui/transitions/Collapse';
 import Typography from 'material-ui/Typography';
 import MenuIcon from 'material-ui-icons/Menu';
 import {withRouter} from 'react-router-dom';
@@ -47,16 +49,44 @@ const styles = theme => ({
 		},
 	},
 
+	filter: {
+		display: 'flex',
+		justifyContent: 'space-around',
+		margin: '8px auto'
+	},
+
 	header: {
 		backgroundColor: '#fff',
-	}
+	},
+
+	button: {
+		backgroundColor: '#fff',
+		border: '1px solid #dae0e6',
+		color: '#6b8193',
+		textTransform: 'none',
+		width: '124',
+		boxShadow: 'none',
+
+		'&:hover': {
+			color: '#fff',
+			backgroundColor: '#6b8193',
+			borderColor: '#6b8193',
+		}
+	},
+
+	rightIcon: {
+		marginLeft: theme.spacing.unit,
+	},
 });
 
 class MainWrapper extends React.Component<any, any> {
 
 	state = {
 		left: false,
+		scroll: 0,
+		filterVisible: true,
 	};
+	scroll = 0;
 
 	toggleDrawer = (side, open) => () => {
 		this.setState({
@@ -64,9 +94,39 @@ class MainWrapper extends React.Component<any, any> {
 		});
 	};
 
+	onScroll = () => {
+		const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+		if (currentScroll > this.scroll && currentScroll > 115) {
+			this.setState({filterVisible: false})
+		} else {
+			this.setState({filterVisible: true})
+		}
+		this.scroll = currentScroll;
+	};
+
+	getFilter = () => {
+		if (this.props.location.pathname === '/topics' || this.props.location.pathname === '/') {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	componentDidMount() {
+		if (this.getFilter()) {
+			window.addEventListener('scroll', this.onScroll);
+		}
+	}
+
+	componentWillUnmount() {
+		if (this.getFilter()) {
+			window.removeEventListener('scroll', this.onScroll);
+		}
+	}
+
 	render() {
 		const { classes } = this.props;
-
 		const {push} = this.props.history;
 
 		const sideList = (
@@ -125,6 +185,26 @@ class MainWrapper extends React.Component<any, any> {
 							Luna
 						</Typography>
 					</Toolbar>
+
+					{
+						this.getFilter() &&
+						<Collapse in={this.state.filterVisible}>
+							<div className={classes.filter}>
+								<Button variant="raised" color="secondary" className={classes.button}>
+									Дата и время
+								</Button>
+
+								<Button variant="raised" color="secondary" className={classes.button}>
+									Район, метро
+								</Button>
+
+								<Button variant="raised" color="secondary" className={classes.button}>
+									Фильтры
+									<Sort className={classes.rightIcon}>send</Sort>
+								</Button>
+							</div>
+						</Collapse>
+					}
 				</AppBar>
 
 				<Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>
@@ -139,6 +219,11 @@ class MainWrapper extends React.Component<any, any> {
 				</Drawer>
 
 				<div className={classes.plug} />
+
+				{
+					this.getFilter() &&
+					<div style={{paddingBottom: 58}}/>
+				}
 
 				{this.props.children}
 			</div>

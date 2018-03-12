@@ -98,7 +98,6 @@ export default (theme): any => ({
 		width: 8,
 		height: 8,
 		borderRadius: 12,
-		backgroundColor: '#824ab3',
 		marginRight: 4,
 		display: 'inline-flex'
 	},
@@ -150,8 +149,8 @@ export default (theme): any => ({
 	},
 
 	svg: {
-		width: 24,
-		height: 24,
+		width: 28,
+		height: 28,
 		padding: 4,
 		'& path': {
 			fill: theme.palette.text.secondary

@@ -214,7 +214,6 @@ class TopicPage extends React.Component<any, any> {
 	};
 
 	handleClickOpen = () => {
-		console.log(11);
 		this.setState({ open: true });
 	};
 
@@ -223,8 +222,6 @@ class TopicPage extends React.Component<any, any> {
 	};
 
 	render() {
-		console.log(this.props, theme);
-
 		const {loading, master} = this.props.data;
 		const {classes} = this.props;
 
@@ -240,13 +237,20 @@ class TopicPage extends React.Component<any, any> {
 			</div>
 		}
 
-		const {name, stars, photos} = master;
+		const {name, stars, photos, address: {description, lat, lon, stations}} = master;
 
 		return (
 			<div>
 				<div className={classes.ratio}>
 					<div className={classes.ratioInner}>
-						<div className={classes.ratioContent} onClick={() => {this.setState({ visible: !this.state.visible }); } }>
+						<div
+							className={classes.ratioContent}
+							onClick={() => {this.setState({ visible: !this.state.visible }); } }
+							onTouchStart={(e) => {
+								e.preventDefault();
+								this.setState({ visible: !this.state.visible });
+							}}
+						>
 							<CardMedia
 								className={classes.photo}
 								image={photos[photoIndex].path}
@@ -303,14 +307,24 @@ class TopicPage extends React.Component<any, any> {
 
 					<Divider />
 						<div className={classes.address}>
-							<div>
-								<Typography variant="body2">
-									<i className={classes.iconMetro}/> Баррикадная. Кудринский переулок, 31
-								</Typography>
-								<Typography color="textSecondary">
-									Мантулинская, 24
-								</Typography>
-							</div>
+							{
+								description === 'Not found' ?
+									<div />
+									:
+									<div>
+										<Typography variant="body2">
+											{
+												stations[0] &&
+												<i className={classes.iconMetro} style={{backgroundColor: '#' + stations[0].color}}/>
+											}
+											{stations[0] && stations[0].name}
+										</Typography>
+
+										<Typography color="textSecondary">
+											{description}
+										</Typography>
+									</div>
+							}
 
 							<Button
 								onClick={this.handleClickOpen}
@@ -326,10 +340,7 @@ class TopicPage extends React.Component<any, any> {
 								open={this.state.open}
 								handleClose={this.handleClose}
 								title="Адрес салона или мастера"
-								address={{
-									lat: 55.796931,
-									lon: 37.537847,
-								}}
+								address={{lat, lon}}
 							/>
 						</div>
 					<Divider />
@@ -403,8 +414,14 @@ const MY_QUERY = gql`query ($id: ID!) {
 			id
 		}
 		address {
+			id
+			description
 			lat
 			lon
+			stations {
+				color
+				name
+			}
 		}	
 	}
 }

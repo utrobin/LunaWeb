@@ -13,8 +13,6 @@ import { LinearProgress } from 'material-ui/Progress';
 import { YMaps, Map as YMap, Placemark, ObjectManager } from 'react-yandex-maps';
 import Slide from 'material-ui/transitions/Slide';
 
-import data from './data.json';
-
 const styles = {
 	appBar: {
 		position: 'relative',
@@ -39,7 +37,29 @@ class Map extends React.Component<any, any> {
 	};
 
 	render() {
-		const {open, handleClose, classes, address, title} = this.props;
+		const {open, handleClose, classes, address, title, feed} = this.props;
+
+		let data = [];
+		if (!address) {
+			data = feed.map(({address}) => {
+				const {id, lat, lon} = address;
+
+				return {
+					type: 'Feature',
+					id,
+					geometry: {
+						type: 'Point',
+						coordinates: [lat, lon]
+					},
+					properties: {
+						balloonContent: 'Содержимое балуна',
+						clusterCaption: 'Еще одна метка',
+						hintContent: 'Текст подсказки'
+					}
+				}
+			});
+		}
+
 
 		return (
 			<Dialog
@@ -92,7 +112,7 @@ class Map extends React.Component<any, any> {
 								clusters={{
 									preset: 'islands#greenClusterIcons',
 								}}
-								features={data.features}
+								features={data}
 							/>
 						}
 
