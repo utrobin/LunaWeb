@@ -6,11 +6,8 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import InlineSVG from 'svg-inline-react';
 import {MoreVert} from 'material-ui-icons';
 import Slider from 'react-slick';
+import Rating from '../Rating/Rating';
 
-import starsSvg from '../../assets/img/stars.svg';
-import neatlySvg from '../../assets/img/neatly.svg';
-import palletSvg from '../../assets/img/pallet.svg';
-import fastSvg from '../../assets/img/fast.svg';
 import commentSvg from '../../assets/img/comment.svg';
 import styles from './BaseCartStyles';
 
@@ -38,8 +35,9 @@ class BaseCart extends React.Component<any> {
 	}
 
 	render() {
+		console.log(this.props)
 		const {classes, avatar, stars, photos, name, style, address} = this.props;
-		const {description, stations} = address;
+		const {description, metros} = address;
 		const { anchorEl } = this.state;
 
 		const settings = {
@@ -69,14 +67,15 @@ class BaseCart extends React.Component<any> {
 						subheader={
 							description === 'Not found' ?
 							<div />
-								:
+							:
 							<div>
-								{
-									stations[0] &&
-									<i className={classes.iconMetro} style={{backgroundColor: '#' + stations[0].color}}/>
-								}
-
-								{stations[0] && stations[0].name + '. '}{description}
+								<Typography variant="body2" color="textSecondary">
+									{
+										metros[0] &&
+										<i className={classes.iconMetro} style={{backgroundColor: '#' + metros[0].color}}/>
+									}
+									{metros[0] && metros[0].name + '. '} {description}
+								</Typography>
 							</div>
 						}
 						action={
@@ -123,25 +122,15 @@ class BaseCart extends React.Component<any> {
 								</div>
 							</div>
 						</div>
-
-						<div className={classes.price}>
-							<Typography variant="body2" color="textSecondary">1 300 — 2 800 ₽</Typography>
-						</div>
-
-						<div className={classes.icons}>
-							<InlineSVG src={palletSvg} />
-							<InlineSVG src={neatlySvg} />
-							<InlineSVG src={fastSvg} />
-						</div>
 					</div>
 					{/*Конец слайдера фотографий*/}
 
 					{/*Футер*/}
 					<CardActions className={classes.CardActions}>
 						<div className={classes.icon}>
-							<InlineSVG src={starsSvg} className={classes.svg}/>
-							<Typography variant="body2">{stars / 10}</Typography>
-							<Typography color="textSecondary">&nbsp;| 124 оценки</Typography>
+							<Rating count={stars} />
+
+							<Typography color="textSecondary">124 оценки</Typography>
 						</div>
 
 						<div className={classes.icon}>

@@ -1,19 +1,17 @@
 import React from 'react';
 import {graphql} from 'react-apollo';
-import ReactStars from 'react-stars';
 import Color from 'color';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Button from 'material-ui/Button';
 import Room from 'material-ui-icons/Room';
 import InlineSVG from 'svg-inline-react';
 import {CircularProgress, Typography, CardMedia, Divider} from 'material-ui';
-import AccessAlarmIcon from 'material-ui-icons/AccessAlarm';
-import theme from '../../theme';
+import Rating from '../Rating/Rating';
 import Map from '../Map';
-import BaseCart from '../BaseCart/BaseCart';
 import gql from 'graphql-tag';
 import {withStyles} from "material-ui/styles";
 import Lightbox from "react-image-lightbox";
+import plural from "../../assets/plural";
 
 import photosSvg from '../../assets/img/photos.svg';
 import neatlySvg from '../../assets/img/neatly.svg';
@@ -39,10 +37,9 @@ const styles = (theme): any => ({
 		marginLeft: 8,
 	},
 	rating: {
-		marginBottom: 16,
 		display: 'flex',
 		alignItems: 'center',
-		cursor: 'base',
+		marginLeft: '-6px',
 	},
 	iconMetro: {
 		width: 8,
@@ -62,16 +59,20 @@ const styles = (theme): any => ({
 	},
 	sign: {
 		display: 'flex',
-		alignItems: 'center',
-		marginRight: 12,
+		margin: 'auto 10px',
+		flexDirection: 'column',
+		width: 76,
+		textAlign: 'center',
 
 		'& i': {
 			display: 'flex',
+			justifyContent: 'center',
 		},
 		'& svg': {
-			marginRight: 6,
-			width: 20,
-			height: 20,
+			width: 56,
+			height: 56,
+			borderRadius: 30,
+			backgroundColor: theme.palette.background.default,
 		},
 		'& path': {
 			fill: theme.palette.text.secondary
@@ -165,7 +166,7 @@ const styles = (theme): any => ({
 const signs = [
 	{
 		img: palletSvg,
-		name: 'Большой выбор лаков',
+		name: 'Много цветов',
 		amount: 18,
 	}, {
 		img: neatlySvg,
@@ -177,7 +178,7 @@ const signs = [
 		amount: 83,
 	}, {
 		img: palletSvg,
-		name: 'Большой выбор лаков',
+		name: 'Много цветов',
 		amount: 18,
 	}, {
 		img: neatlySvg,
@@ -269,25 +270,11 @@ class TopicPage extends React.Component<any, any> {
 
 					<div className={classes.rating}>
 						<div className={classes.stars}>
-							<ReactStars
-								count={5}
-								value={stars / 10}
-								edit={false}
-								color1={theme.palette.text.secondary}
-								color2={theme.palette.primary.main}
-								size={12}
-							/>
+							<Rating count={stars} />
 						</div>
 
-						<Typography variant="body2" className={classes.valueStars}>
-							{stars / 10}
-						</Typography>
-						<Typography color="textSecondary">&nbsp;| 124 оценки</Typography>
+						<Typography color="textSecondary">124 оценки</Typography>
 					</div>
-
-					<Typography color="textSecondary">
-						Мы легко впишемся в ваш график, а все наши услуги не займут у вас много времени.
-					</Typography>
 
 					<div className={classes.signs}>
 						<GridList className={classes.gridList}>
@@ -297,7 +284,7 @@ class TopicPage extends React.Component<any, any> {
 										<div className={classes.sign}>
 											<InlineSVG src={el.img} />
 											<Typography variant="body2">{el.name}</Typography>
-											<Typography color="textSecondary">&nbsp;| {el.amount}</Typography>
+											<Typography color="textSecondary">{el.amount} {plural(el.amount, ['оценка', 'оценки', 'оценок'])}</Typography>
 										</div>
 									</GridListTile>
 								))

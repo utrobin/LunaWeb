@@ -66,6 +66,7 @@ const styles = theme => ({
 		textTransform: 'none',
 		width: '124',
 		boxShadow: 'none',
+		whiteSpace: 'nowrap',
 
 		'&:hover': {
 			color: '#fff',

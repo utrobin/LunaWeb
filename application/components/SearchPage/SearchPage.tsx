@@ -1,5 +1,4 @@
 import React from 'react';
-import {connect} from "react-redux";
 import {withStyles} from 'material-ui/styles';
 import {InfiniteLoader, WindowScroller, AutoSizer, Grid, CellMeasurer, CellMeasurerCache} from 'react-virtualized';
 import {Switch, Route, Link} from 'react-router-dom';
@@ -53,17 +52,29 @@ class SearchPage extends React.Component<any, any> {
 	}
 
 	render() {
-		const {feed, loadMoreEntries} = this.props;
+		const {feed, loadMoreEntries, refresh} = this.props;
 		const {wrapper, fab}: any = this.props.classes;
+		const {open} = this.state;
 
 		return (
 			<div className={wrapper}>
-				<InfinityScroll
-					feed={feed || []}
-					loadMoreEntries={loadMoreEntries}
-					loading={false}
-					finish={finish}
-				/>
+				{
+					!open &&
+					<InfinityScroll
+						feed={feed || []}
+						loadMoreEntries={loadMoreEntries}
+						refresh={refresh}
+						finish={finish}
+					/>
+				}
+
+				{
+					open &&
+					<Map
+						open={open}
+						handleClose={this.handleClose}
+					/>
+				}
 
 				<Button
 					onClick={this.handleClickOpen}
@@ -73,46 +84,36 @@ class SearchPage extends React.Component<any, any> {
 				>
 					<Room />
 				</Button>
-
-				<Map
-					open={this.state.open}
-					handleClose={this.handleClose}
-					feed={feed || []}
-				/>
 			</div>
 		);
 	}
 }
 
-const mapStateToProps = (state: any): any => state;
+const Comp = withStyles(styles)(SearchPage);
 
-const Comp = connect<any, any, any>(
-	mapStateToProps,
-)(withStyles(styles)(SearchPage));
-
-const QUERY = gql`query Feed($offset: Int!, $limit: Int!)  {
-	feed(offset: $offset, limit: $limit)	{
+const QUERY = gql`query feed($limit: Limit!)  {
+	feed(limit: $limit)	{
 		id,
 		name,
 		stars,
 		avatar	{
-			path
+				path
 		}
 		photos	{
-			path
+				path
 		}
 		signs {
-			id
+				id
 		}
 		address {
 				id
 				description
 				lat
 				lon
-				stations {
+        metros {
 						color
-						name
-				}
+            station
+        }
 		}
 	}
 }`;
@@ -123,8 +124,10 @@ export default graphql(QUERY, {
 	options(props) {
 		return {
 			variables: {
-				offset: 0,
-				limit: ITEMS_PER_PAGE,
+				limit: {
+					offset: 0,
+					limit: ITEMS_PER_PAGE,
+				}
 			},
 			fetchPolicy: 'network-only',
 		};
@@ -143,17 +146,15 @@ export default graphql(QUERY, {
 						offset: feed.length,
 					},
 					updateQuery: (previousResult, { fetchMoreResult }) => {
-						if (!fetchMoreResult.feed.length) {
-							finish.value = true;
-						}
-
 						if (!fetchMoreResult) {
 							return previousResult;
 						}
 
-						return Object.assign({}, previousResult, {
+						const data = Object.assign({}, previousResult, {
 							feed: [...previousResult.feed, ...fetchMoreResult.feed],
 						});
+
+						return data;
 					},
 				});
 			},

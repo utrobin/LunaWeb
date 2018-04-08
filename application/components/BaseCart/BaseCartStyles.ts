@@ -61,10 +61,14 @@ export default (theme): any => ({
 	},
 	dots: {
 		position: 'absolute',
-		bottom: 'auto',
+		bottom: 12,
 
 		'& li.slick-active button:before': {
-			color: theme.palette.primary.main,
+			color: theme.palette.background.default,
+			opacity: 1,
+			fontSize: 8,
+			marginTop: 1,
+			marginLeft: -1,
 		},
 
 		'& li': {
@@ -81,6 +85,8 @@ export default (theme): any => ({
 		},
 
 		'& li button:before': {
+			color: theme.palette.background.default,
+			opacity: 0.5,
 			width: 4,
 			height: 4,
 			padding: 0,
@@ -151,7 +157,6 @@ export default (theme): any => ({
 	svg: {
 		width: 28,
 		height: 28,
-		padding: 4,
 		'& path': {
 			fill: theme.palette.text.secondary
 		},
