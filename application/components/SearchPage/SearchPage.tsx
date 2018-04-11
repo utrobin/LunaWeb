@@ -5,7 +5,7 @@ import {Switch, Route, Link} from 'react-router-dom';
 import Button from 'material-ui/Button';
 import Room from 'material-ui-icons/Room';
 import gql from 'graphql-tag';
-import {graphql} from 'react-apollo';
+import {graphql, Query} from 'react-apollo';
 import InfinityScroll from '../InfinityScroll/InfinityScroll';
 import Map from '../Map';
 import theme from '../../theme';
@@ -30,6 +30,47 @@ let finish = {
 	value: false,
 };
 
+
+const ITEMS_PER_PAGE = 12;
+
+const QUERY_FEED = gql`query feed($limit: Limit!, $service_types: [ID!]!)  {
+    feed(limit: $limit, service_types: $service_types)	{
+        id,
+        name,
+        stars,
+        avatar	{
+            path
+        }
+        photos	{
+            path
+        }
+        signs {
+            id
+        }
+        address {
+            id
+            description
+            lat
+            lon
+            metros {
+                color
+                station
+            }
+        }
+    }
+}`;
+
+const GET_FILTERS = gql`
+    {
+        filters @client {
+            cover
+            manicure
+            dop1
+            dop2
+        }
+    }
+`;
+
 class SearchPage extends React.Component<any, any> {
 	state = {
 		open: false,
@@ -52,112 +93,95 @@ class SearchPage extends React.Component<any, any> {
 	}
 
 	render() {
-		const {feed, loadMoreEntries, refresh} = this.props;
 		const {wrapper, fab}: any = this.props.classes;
 		const {open} = this.state;
 
 		return (
-			<div className={wrapper}>
-				{
-					!open &&
-					<InfinityScroll
-						feed={feed || []}
-						loadMoreEntries={loadMoreEntries}
-						refresh={refresh}
-						finish={finish}
-					/>
-				}
+			<Query
+				query={GET_FILTERS}
+			>
+				{({data: {filters}}) => {
+					const formatFilters = [];
 
-				{
-					open &&
-					<Map
-						open={open}
-						handleClose={this.handleClose}
-					/>
-				}
+					['dop1', 'dop2', 'cover', 'manicure'].forEach((el) => {
+						if (filters[el] === true) {
+							el === 'dop1' && formatFilters.push(14);
+							el === 'dop2' && formatFilters.push(15);
+						} else if (filters[el] !== 'default'&& filters[el]) {
+							formatFilters.push(+filters[el]);
+						}
+					});
 
-				<Button
-					onClick={this.handleClickOpen}
-					variant="fab"
-					className={fab}
-					color="primary"
-				>
-					<Room />
-				</Button>
-			</div>
+					return (
+						<Query
+							query={QUERY_FEED}
+							fetchPolicy="network-only"
+							variables={{
+								limit: {
+									offset: 0,
+									limit: ITEMS_PER_PAGE,
+								},
+								service_types: formatFilters,
+							}}
+						>
+							{({ data: {feed}, fetchMore}) => {
+								const loadMoreEntries = () => {
+									return fetchMore({
+										variables: {
+											limit: {
+												offset: feed ? feed.length : 0,
+												limit: ITEMS_PER_PAGE,
+											},
+										},
+										updateQuery: (previousResult, {fetchMoreResult}) => {
+											if (!fetchMoreResult) {
+												return previousResult;
+											}
+
+											const data = Object.assign({}, previousResult, {
+												feed: [...previousResult.feed, ...fetchMoreResult.feed],
+											});
+
+											return data;
+										},
+									});
+								};
+
+								return (
+									<div className={wrapper}>
+										{
+											!open &&
+											<InfinityScroll
+												feed={feed || []}
+												loadMoreEntries={loadMoreEntries}
+												finish={finish}
+											/>
+										}
+
+										{
+											open &&
+											<Map
+												open={open}
+												handleClose={this.handleClose}
+											/>
+										}
+
+										<Button
+											onClick={this.handleClickOpen}
+											variant="fab"
+											className={fab}
+											color="primary"
+										>
+											<Room />
+										</Button>
+									</div>
+							)
+						}}
+					</Query>
+				)}}
+			</Query>
 		);
 	}
 }
 
-const Comp = withStyles(styles)(SearchPage);
-
-const QUERY = gql`query feed($limit: Limit!)  {
-	feed(limit: $limit)	{
-		id,
-		name,
-		stars,
-		avatar	{
-				path
-		}
-		photos	{
-				path
-		}
-		signs {
-				id
-		}
-		address {
-				id
-				description
-				lat
-				lon
-        metros {
-						color
-            station
-        }
-		}
-	}
-}`;
-
-const ITEMS_PER_PAGE = 12;
-
-export default graphql(QUERY, {
-	options(props) {
-		return {
-			variables: {
-				limit: {
-					offset: 0,
-					limit: ITEMS_PER_PAGE,
-				}
-			},
-			fetchPolicy: 'network-only',
-		};
-	},
-	props({ data: { loading, feed, fetchMore } }) {
-		return {
-			feed,
-
-			loadMoreEntries() {
-				return fetchMore({
-					// query: ... (you can specify a different query. FEED_QUERY is used by default)
-					variables: {
-						// We are able to figure out which offset to use because it matches
-						// the feed length, but we could also use state, or the previous
-						// variables to calculate this (see the cursor example below)
-						offset: feed.length,
-					},
-					updateQuery: (previousResult, { fetchMoreResult }) => {
-						if (!fetchMoreResult) {
-							return previousResult;
-						}
-
-						const data = Object.assign({}, previousResult, {
-							feed: [...previousResult.feed, ...fetchMoreResult.feed],
-						});
-
-						return data;
-					},
-				});
-			},
-		};
-	},
-})(Comp);
+export default withStyles(styles)(SearchPage);

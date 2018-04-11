@@ -3,8 +3,13 @@ import gql from 'graphql-tag';
 let nextTodoId = 0;
 const filters = {
   defaults: {
-    area: null,
-    prevArea: null,
+		filters: {
+			cover: 'default',
+			manicure: 'default',
+			dop1: false,
+			dop2: false,
+			__typename: 'Filters'
+    }
   },
   resolvers: {
     Mutation: {

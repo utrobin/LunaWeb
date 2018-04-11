@@ -5,6 +5,10 @@ export default (theme): any => ({
 	card: {
 		margin: 15,
 	},
+	title: {
+		height: 24,
+		overflow: 'hidden',
+	},
 	ratio: {
 		width: '100%',
 	},

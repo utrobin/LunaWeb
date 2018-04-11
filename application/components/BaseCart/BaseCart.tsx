@@ -6,10 +6,11 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 import InlineSVG from 'svg-inline-react';
 import {MoreVert} from 'material-ui-icons';
 import Slider from 'react-slick';
-import Rating from '../Rating/Rating';
+import Stars from '../Stars/Stars';
 
 import commentSvg from '../../assets/img/comment.svg';
 import styles from './BaseCartStyles';
+import plural from "../../assets/plural";
 
 class BaseCart extends React.Component<any> {
 	state = {
@@ -25,18 +26,17 @@ class BaseCart extends React.Component<any> {
 	};
 
 	getLinkWrapper(text: string | React.ReactNode) {
-		const {id} = this.props;
+		const {id, __typename} = this.props;
 
 		return (
-			<Link to={`/topics/${id}`}>
+			<Link to={`/${__typename.toLowerCase()}/${id}`} target="_blank">
 					{text}
 			</Link>
 		)
 	}
 
 	render() {
-		console.log(this.props)
-		const {classes, avatar, stars, photos, name, style, address} = this.props;
+		const {classes, avatar, stars, photos, name, style, address, __typename} = this.props;
 		const {description, metros} = address;
 		const { anchorEl } = this.state;
 
@@ -49,6 +49,8 @@ class BaseCart extends React.Component<any> {
 			slidesToScroll: 1,
 			dotsClass: 'slick-dots ' + classes.dots,
 		};
+
+		const amount = Math.floor(Math.random() * 98);
 
 		return (
 			<div className={classes.wrapper} style={style}>
@@ -63,7 +65,13 @@ class BaseCart extends React.Component<any> {
 								/>
 							)
 						}
-						title={this.getLinkWrapper(<Typography variant="body2">Мастер {name}</Typography>)}
+						title={
+							this.getLinkWrapper(
+								<Typography variant="body2" className={classes.title}>
+									{__typename === 'Master' && 'Мастер'} {name}
+								</Typography>
+							)
+						}
 						subheader={
 							description === 'Not found' ?
 							<div />
@@ -74,7 +82,7 @@ class BaseCart extends React.Component<any> {
 										metros[0] &&
 										<i className={classes.iconMetro} style={{backgroundColor: '#' + metros[0].color}}/>
 									}
-									{metros[0] && metros[0].name + '. '} {description}
+									{metros[0] && metros[0].station + '. '} {description}
 								</Typography>
 							</div>
 						}
@@ -128,13 +136,13 @@ class BaseCart extends React.Component<any> {
 					{/*Футер*/}
 					<CardActions className={classes.CardActions}>
 						<div className={classes.icon}>
-							<Rating count={stars} />
+							<Stars count={stars} />
 
-							<Typography color="textSecondary">124 оценки</Typography>
+							<Typography color="textSecondary">{amount} {plural(amount, ['оценка', 'оценки', 'оценок'])}</Typography>
 						</div>
 
 						<div className={classes.icon}>
-							<Typography variant="body2">34</Typography>
+							<Typography variant="body2">{Math.floor(Math.random() * 98)}</Typography>
 							<InlineSVG src={commentSvg} className={classes.svg}/>
 						</div>
 					</CardActions>

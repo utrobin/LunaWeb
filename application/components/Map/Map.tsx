@@ -7,6 +7,7 @@ import IconButton from 'material-ui/IconButton';
 import Collapse from 'material-ui/transitions/Collapse';
 import Typography from 'material-ui/Typography';
 import CloseIcon from 'material-ui-icons/Close';
+import { CircularProgress } from 'material-ui/Progress';
 import { YMaps, Map as YMap, Placemark, ObjectManager } from 'react-yandex-maps';
 import Slide from 'material-ui/transitions/Slide';
 import {graphql} from "react-apollo";
@@ -27,7 +28,10 @@ const styles = (theme) => ({
 		backgroundColor: theme.palette.background.paper,
 		bottom: 0,
 		width: '100%',
-		height: '100px',
+	},
+	loading: {
+		display: 'flex',
+		alignItems: 'center',
 	}
 });
 
@@ -131,7 +135,23 @@ class Map extends React.Component<any, any> {
 							<CloseIcon />
 						</IconButton>
 						<Typography variant="title" color="inherit" className={classes.flex}>
-							{ loading ? 'Поиск по карте. Загрузка подождите' : `Поиск по карте. Найдено ${data.length}`}
+							{
+								loading ?
+									<div className={classes.loading}>
+										Поиск по карте
+
+										<CircularProgress
+											className={classes.progress}
+											style={{
+												color: theme.palette.background.paper,
+												marginLeft: 10,
+											}}
+											size={30}
+										/>
+									</div>
+								:
+									`Поиск по карте. Найдено ${data.length}`
+							}
 						</Typography>
 					</Toolbar>
 				</AppBar>

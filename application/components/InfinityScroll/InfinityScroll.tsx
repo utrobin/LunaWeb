@@ -6,21 +6,14 @@ import {Switch, Route, Link} from 'react-router-dom';
 import BaseCart from '../BaseCart/BaseCart';
 
 export default class SearchPage extends React.Component<any, any> {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			columnCount: 1,
-			columnWidth: 100,
-			open: false,
-		};
-	}
+	state = {
+		columnCount: 1,
+		columnWidth: 100,
+		open: false,
+	};
 
 	render() {
-		const {feed, loadMoreEntries, finish, refresh} = this.props;
-		const {columnCount, columnWidth} = this.state;
-
-		console.log(finish);
+		const {feed, loadMoreEntries, finish} = this.props;
 
 		return (
 			<div>
@@ -28,8 +21,11 @@ export default class SearchPage extends React.Component<any, any> {
 					next={loadMoreEntries}
 					hasMore={!finish.value}
 					loader={
-						<div style={{textAlign: 'center'}}>
-							<CircularProgress />
+						<div style={{textAlign: 'center', marginTop: 15}}>
+							<CircularProgress
+								thickness={5}
+								size={50}
+							/>
 						</div>
 					}
 					endMessage={

@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
-import {Search, AccountCircle, LocationOn, Announcement, Person, Sort} from 'material-ui-icons';
+import {Search, AccountCircle, Announcement, Person} from 'material-ui-icons';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import {AppBar, Toolbar, IconButton, Drawer, Divider} from 'material-ui';
 import Button from 'material-ui/Button';
@@ -8,6 +8,7 @@ import Collapse from 'material-ui/transitions/Collapse';
 import Typography from 'material-ui/Typography';
 import MenuIcon from 'material-ui-icons/Menu';
 import {withRouter} from 'react-router-dom';
+import Filters from "../Filters/Filters";
 
 const styles = theme => ({
 	root: {
@@ -49,34 +50,8 @@ const styles = theme => ({
 		},
 	},
 
-	filter: {
-		display: 'flex',
-		justifyContent: 'space-around',
-		margin: '8px auto'
-	},
-
 	header: {
 		backgroundColor: '#fff',
-	},
-
-	button: {
-		backgroundColor: '#fff',
-		border: '1px solid #dae0e6',
-		color: '#6b8193',
-		textTransform: 'none',
-		width: '124',
-		boxShadow: 'none',
-		whiteSpace: 'nowrap',
-
-		'&:hover': {
-			color: '#fff',
-			backgroundColor: '#6b8193',
-			borderColor: '#6b8193',
-		}
-	},
-
-	rightIcon: {
-		marginLeft: theme.spacing.unit,
 	},
 });
 
@@ -96,6 +71,7 @@ class MainWrapper extends React.Component<any, any> {
 	};
 
 	onScroll = () => {
+		console.log(1);
 		const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
 
 		if (currentScroll > this.scroll && currentScroll > 115) {
@@ -107,7 +83,7 @@ class MainWrapper extends React.Component<any, any> {
 	};
 
 	getFilter = () => {
-		if (this.props.location.pathname === '/topics' || this.props.location.pathname === '/') {
+		if (this.props.location.pathname === '/feed' || this.props.location.pathname === '/') {
 			return true;
 		} else {
 			return false;
@@ -115,15 +91,11 @@ class MainWrapper extends React.Component<any, any> {
 	};
 
 	componentDidMount() {
-		if (this.getFilter()) {
 			window.addEventListener('scroll', this.onScroll);
-		}
 	}
 
 	componentWillUnmount() {
-		if (this.getFilter()) {
 			window.removeEventListener('scroll', this.onScroll);
-		}
 	}
 
 	render() {
@@ -133,44 +105,44 @@ class MainWrapper extends React.Component<any, any> {
 		const sideList = (
 			<div className={classes.list}>
 				<List>
-					<ListItem button onClick={() => push('/topics')}>
+					<ListItem button onClick={() => push('/')}>
 						<ListItemIcon>
 							<Search />
 						</ListItemIcon>
 						<ListItemText primary="Поиск" />
 					</ListItem>
 
-					<ListItem button>
-						<ListItemIcon>
-							<AccountCircle />
-						</ListItemIcon>
-							<ListItemText primary="Мой профиль" />
-					</ListItem>
+					{/*<ListItem button>*/}
+						{/*<ListItemIcon>*/}
+							{/*<AccountCircle />*/}
+						{/*</ListItemIcon>*/}
+							{/*<ListItemText primary="Мой профиль" />*/}
+					{/*</ListItem>*/}
 
-					<ListItem button onClick={() => push('/signup')}>
-						<ListItemIcon>
-							<Person />
-						</ListItemIcon>
-						<ListItemText primary="Sign up" />
-					</ListItem>
+					{/*<ListItem button onClick={() => push('/signup')}>*/}
+						{/*<ListItemIcon>*/}
+							{/*<Person />*/}
+						{/*</ListItemIcon>*/}
+						{/*<ListItemText primary="Sign up" />*/}
+					{/*</ListItem>*/}
 
-					<ListItem button onClick={() => push('/signin')}>
-						<ListItemIcon>
-							<Person />
-						</ListItemIcon>
-						<ListItemText primary="Sign in" />
-					</ListItem>
-				</List>
+					{/*<ListItem button onClick={() => push('/signin')}>*/}
+						{/*<ListItemIcon>*/}
+							{/*<Person />*/}
+						{/*</ListItemIcon>*/}
+						{/*<ListItemText primary="Sign in" />*/}
+					{/*</ListItem>*/}
+				{/*</List>*/}
 
-				<Divider />
+				{/*<Divider />*/}
 
-				<List>
-					<ListItem button>
-						<ListItemIcon>
-							<Announcement />
-						</ListItemIcon>
-						<ListItemText primary="Оставить отзыв" />
-					</ListItem>
+				{/*<List>*/}
+					{/*<ListItem button>*/}
+						{/*<ListItemIcon>*/}
+							{/*<Announcement />*/}
+						{/*</ListItemIcon>*/}
+						{/*<ListItemText primary="Оставить отзыв" />*/}
+					{/*</ListItem>*/}
 				</List>
 			</div>
 		);
@@ -190,20 +162,7 @@ class MainWrapper extends React.Component<any, any> {
 					{
 						this.getFilter() &&
 						<Collapse in={this.state.filterVisible}>
-							<div className={classes.filter}>
-								<Button variant="raised" color="secondary" className={classes.button}>
-									Дата и время
-								</Button>
-
-								<Button variant="raised" color="secondary" className={classes.button}>
-									Район, метро
-								</Button>
-
-								<Button variant="raised" color="secondary" className={classes.button}>
-									Фильтры
-									<Sort className={classes.rightIcon}>send</Sort>
-								</Button>
-							</div>
+							<Filters />
 						</Collapse>
 					}
 				</AppBar>

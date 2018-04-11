@@ -10,7 +10,7 @@ import {MuiThemeProvider} from 'material-ui/styles';
 import merge from 'lodash.merge';
 import theme from './theme';
 import Routing from './Routing/Routing';
-import todos from './resolvers/filters';
+import filters from './resolvers/filters';
 import visibilityFilter from './resolvers/visibilityFilter';
 
 const cache = new InMemoryCache();
@@ -29,15 +29,21 @@ const typeDefs = `
   }
 
   type Query {
-    visibilityFilter: String
+    visibilityFilter: {
+    	cover: string!',
+			manicure: string!,
+			dop1: boolean!,
+			dop2: boolean!, 
+    }
     todos: [Todo]
   }
 `;
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
 	cache: cache,
+	connectToDevTools: true,
 	link: withClientState({
-		...merge(todos, visibilityFilter),
+		...merge(filters, visibilityFilter),
 		cache,
 		typeDefs,
 	}).concat(

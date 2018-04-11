@@ -54,7 +54,8 @@ const SmallCart = ({id, classes}) => (
 						<CircularProgress className={classes.progress} />
 						:
 						<BaseCart
-							{...data}
+							{...data.master}
+							id={id}
 						/>
 				}
 			</div>
