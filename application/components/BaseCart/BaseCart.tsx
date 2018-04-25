@@ -50,6 +50,7 @@ class BaseCart extends React.Component<any> {
 			dotsClass: 'slick-dots ' + classes.dots,
 		};
 
+		console.log(avatar);
 		const amount = Math.floor(Math.random() * 98);
 
 		return (
@@ -58,6 +59,7 @@ class BaseCart extends React.Component<any> {
 					{/*Шапка*/}
 					<CardHeader
 						avatar={
+							avatar &&
 							this.getLinkWrapper(
 								<Avatar
 									className={classes.avatar}
